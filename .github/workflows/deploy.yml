@@ -1,0 +1,43 @@
+name: Deploy FastAPI Microservice
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Setup Node.js (for CDK)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Build Shared Lambda Layer
+        run: |
+          # Python layers MUST be in a folder named 'python' to be found by Lambda
+          mkdir -p src/backend/validate_layer/python
+          # Install all requirements from your backend folder into this layer folder
+          pip install -r src/backend/requirements.txt -t src/backend/common_layer/python/
+
+      - name: Install CDK and Deploy
+        run: |
+          npm install
+          npx cdk deploy --require-approval never
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ap-south-1
