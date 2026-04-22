@@ -31,7 +31,7 @@ jobs:
           # Python layers MUST be in a folder named 'python' to be found by Lambda
           mkdir -p src/backend/validate_layer/python
           # Install all requirements from your backend folder into this layer folder
-          pip install -r src/backend/requirements.txt -t src/backend/common_layer/python/
+          pip install -r src/backend/requirements.txt -t src/backend/validate_layer/python/
 
       - name: Install CDK and Deploy
         run: |

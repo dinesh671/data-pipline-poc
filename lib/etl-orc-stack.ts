@@ -20,7 +20,7 @@ export class EtlOrcStack extends cdk.Stack {
     const validate_layer = new lambda.LayerVersion(this, 'CommonDepsLayer', {
             code: lambda.Code.fromAsset('src/backend/validate_layer'),
             compatibleRuntimes: [lambda.Runtime.PYTHON_3_11],
-            description: 'Shared dependencies for all microservices',
+            description: 'Shared dependencies for all microservices ',
         });
 
     this.handler = new lambda.Function(this, 'UploadValidator', {
